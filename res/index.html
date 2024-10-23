@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uploat - Select and Upload File</title>
+  <style>
+    body {
+      background-color: #1c1c1c;
+      color: #e5e5e5;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      width: 90%;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #2b2b2b;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+
+    h1 {
+      text-align: center;
+      color: #36d7b7;
+      font-size: 32px;
+      margin-bottom: 20px;
+    }
+
+    .file-input {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    label[for="fileInput"],
+    button#selectFileButton {
+      background-color: #36d7b7;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      color: #1c1c1c;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    label[for="fileInput"]:hover,
+    button#selectFileButton:hover {
+      background-color: #2bb2a4;
+    }
+
+    button#uploadFileButton {
+      background-color: #4a90e2;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      color: #fff;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+      margin-left: 10px;
+    }
+
+    button#uploadFileButton:disabled {
+      background-color: #aaa;
+      cursor: not-allowed;
+    }
+
+    button#uploadFileButton:hover:not(:disabled) {
+      background-color: #3c7fc4;
+    }
+
+    p {
+      text-align: center;
+      font-size: 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th,
+    td {
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #333;
+      color: #fff;
+      text-transform: uppercase;
+    }
+
+    tr:nth-child(even) {
+      background-color: #3a3a3a;
+    }
+
+    tr:hover {
+      background-color: #444;
+    }
+
+    td.action-buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .action-buttons button {
+      background-color: #36d7b7;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      color: #fff;
+      font-size: 14px;
+    }
+
+    .action-buttons button.delete-button {
+      background-color: #e74c3c;
+    }
+
+    .action-buttons button:hover {
+      background-color: #2bb2a4;
+    }
+
+    .action-buttons button.delete-button:hover {
+      background-color: #c0392b;
+    }
+
+    /* Media query for phones */
+    @media (max-width: 600px) {
+      .container {
+        width: 95%;
+        padding: 10px;
+      }
+
+      h1 {
+        font-size: 28px;
+        margin-bottom: 15px;
+      }
+
+      .file-input {
+        flex-direction: column;
+      }
+
+      button#selectFileButton,
+      button#uploadFileButton {
+        width: 100%;
+        padding: 15px;
+        margin: 5px 0;
+      }
+
+      p {
+        font-size: 12px;
+      }
+
+      table,
+      th,
+      td {
+        font-size: 12px;
+        padding: 8px;
+      }
+
+      td.action-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .action-buttons button {
+        padding: 8px;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Uploat</h1>
+
+    <div class="file-input">
+      <button id="selectFileButton">Select a File</button>
+      <input type="file" id="fileInput">
+      <button id="uploadFileButton" disabled>Upload File</button>
+    </div>
+
+    <p id="fileName">No file selected</p>
+    <p id="fileType"></p>
+    <p id="uploadStatus"></p>
+
+    <h2>Uploaded Files</h2>
+    <table id="uploadedFilesTable">
+      <thead>
+        <tr>
+          <th>File Name</th>
+          <th>Size</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Dynamic content will be added here -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const fileInput = document.getElementById('fileInput');
+      const selectFileButton = document.getElementById('selectFileButton');
+      const uploadFileButton = document.getElementById('uploadFileButton');
+      const fileNameDisplay = document.getElementById('fileName');
+      const fileTypeDisplay = document.getElementById('fileType');
+      const uploadStatus = document.getElementById('uploadStatus');
+
+      let selectedFile = null;
+
+      selectFileButton.addEventListener('click', function () {
+        fileInput.click();
+      });
+
+      // Event listener for when a file is selected
+      fileInput.addEventListener('change', function (event) {
+        selectedFile = event.target.files[0];
+
+        if (selectedFile) {
+          // Display the selected file's name and MIME type
+          fileNameDisplay.textContent = `Selected file: ${selectedFile.name}`;
+          fileTypeDisplay.textContent = `MIME type: ${selectedFile.type || 'Unknown'}`;
+
+          // Enable the upload button
+          uploadFileButton.disabled = false;
+        } else {
+          fileNameDisplay.textContent = 'No file selected';
+          fileTypeDisplay.textContent = '';
+          uploadFileButton.disabled = true;
+        }
+      });
+
+      // Event listener for the upload button
+      uploadFileButton.addEventListener('click', function () {
+        if (!selectedFile) {
+          uploadStatus.textContent = 'No file selected for upload!';
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', selectedFile);  // Append the file to the form data
+        const contentLength = selectedFile.size;
+
+        fetch('/upload', {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'Content-Length': contentLength.toString(),
+          }
+        })
+          .then(response => response.text())
+          .then(data => {
+            uploadStatus.textContent = 'File uploaded successfully!';
+            console.log('Server response:', data);
+            location.reload();
+          })
+          .catch(error => {
+            uploadStatus.textContent = 'Error uploading file';
+            console.error('Error:', error);
+          });
+      });
+    });
+
+    function fetchUploadedFiles() {
+      fetch('/uploaded')
+        .then(response => response.json())
+        .then(files => {
+          const tableBody = document.querySelector('#uploadedFilesTable tbody');
+          tableBody.innerHTML = ''; // Clear previous content
+          files.forEach(file => {
+            let filename = file["name"];
+            let size_mb = file["size"];
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${filename}</td>
+              <td>${size_mb.toFixed(2)} Mb</td>
+              <td class="action-buttons">
+                <button onclick="downloadFile('${filename}')">Download</button>
+                <button class="delete-button" onclick="deleteFile('${filename}')">Delete</button>
+              </td>
+            `;
+            tableBody.appendChild(row);
+          });
+        })
+        .catch(error => {
+          console.error('Error fetching uploaded files:', error);
+        });
+    }
+
+    function deleteFile(fileName) {
+      fetch(`/delete/${fileName}`, {
+        method: 'DELETE'
+      })
+        .then(response => response.text())
+        .then(result => {
+          alert(result);
+          fetchUploadedFiles();
+        })
+        .catch(error => {
+          console.error('Error deleting file:', error);
+        });
+    }
+
+    function downloadFile(fileName) {
+      // Initiate file download
+      const link = document.createElement('a');
+      link.href = `/download/${fileName}`;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link); // Clean up
+    }
+
+    window.onload = fetchUploadedFiles;
+  </script>
+</body>
+
+</html>

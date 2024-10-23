@@ -1,0 +1,10 @@
+[package]
+name = "uploat"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+multipart = "0.18.0"
+rouille = "3.6.2"
+serde = "1.0.213"
+serde_derive = "1.0.213"
