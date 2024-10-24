@@ -2,6 +2,11 @@
 name = "uploat"
 version = "0.1.0"
 edition = "2021"
+authors = ["thatmagicalcat <thatmagicalcat@hotmail.com>"]
+description = "Share files between multiple devices effortlessly."
+repository = "https://github.com/thatmagicalcat/uploat"
+license = "GPL-3.0-only"
+readme = "README.md"
 
 [dependencies]
 multipart = "0.18.0"
