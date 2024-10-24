@@ -14,4 +14,4 @@ This web application allows users to select and upload files, manage uploaded fi
    - **Delete** a file by clicking the "Delete" button, which removes the file from the server.
 
 ## Screenshot
-![screenshot](screenshot/ss.png)
+![screenshot](screenshot/ss.png#)
