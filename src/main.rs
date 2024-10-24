@@ -1,12 +1,13 @@
 use std::ops::Not;
 use std::io::{Read, Write};
 use std::collections::HashMap;
-
-#[macro_use] extern crate rouille;
-#[macro_use] extern crate serde_derive;
+use std::os::unix::fs::MetadataExt;
 
 use multipart::server::save::BufReader;
 use multipart::server::Multipart;
+
+use rouille::router;
+use serde_derive::Serialize;
 
 #[derive(Serialize)]
 struct FileInfo {
