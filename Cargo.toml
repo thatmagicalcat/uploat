@@ -1,6 +1,6 @@
 [package]
 name = "uploat"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["thatmagicalcat <thatmagicalcat@hotmail.com>"]
 description = "Share files between multiple devices effortlessly."
@@ -9,6 +9,7 @@ license = "GPL-3.0-only"
 readme = "README.md"
 
 [dependencies]
+local-ip-address = "0.6.3"
 multipart = "0.18.0"
 rouille = "3.6.2"
 serde = "1.0.213"

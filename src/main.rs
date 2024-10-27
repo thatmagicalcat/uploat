@@ -1,6 +1,6 @@
-use std::ops::Not;
-use std::io::{Read, Write};
 use std::collections::HashMap;
+use std::io::{Read, Write};
+use std::ops::Not;
 use std::os::unix::fs::MetadataExt;
 
 use multipart::server::save::BufReader;
@@ -8,6 +8,8 @@ use multipart::server::Multipart;
 
 use rouille::router;
 use serde_derive::Serialize;
+
+const PORT: u16 = 8888;
 
 #[derive(Serialize)]
 struct FileInfo {
@@ -21,6 +23,7 @@ fn main() {
         .to_str()
         .map(|i| i.to_string())
         .unwrap();
+
     let upload_path = &*String::leak(upload_path);
 
     std::path::Path::new(&upload_path)
@@ -28,8 +31,14 @@ fn main() {
         .not()
         .then(|| std::fs::create_dir(upload_path));
 
-    println!("Listening on 0.0.0.0:8888");
-    rouille::start_server("0.0.0.0:8888", move |request| {
+    println!(
+        "Listening on: http://{}:{PORT}",
+        local_ip_address::local_ip()
+            .map(|i| i.to_string())
+            .unwrap_or("127.0.0.1".to_string())
+    );
+
+    rouille::start_server(&format!("0.0.0.0:{PORT}"), move |request| {
         router! {
             request,
 
@@ -114,15 +123,10 @@ fn main() {
 
             (POST) (/upload) => {
                 let headers: HashMap<String, String> = HashMap::from_iter(request.headers().map(|(k,v)| (k.to_string(), v.to_string())));
-                let content_len = &headers["Content-Length"];
-
-                // Log the content length (for debugging purposes)
-                println!("Content-Length: {}", content_len);
-
                 let boundary = headers.get("Content-Type").and_then(|ct| ct.split("boundary=").nth(1))
                 .unwrap_or("");
 
-                // // Parse the multipart form data
+                // Parse the multipart form data
                 let mut mp = Multipart::with_body(request.data().unwrap(), boundary);
 
                 let mut file_content = Vec::new();
@@ -144,14 +148,6 @@ fn main() {
                     }
                 })
                 .unwrap();
-
-                // Respond with the received data
-                let response_body = format!(
-                    "Received file: {file_name}\n with MIME type: {mime_type}\nFile size: {} bytes",
-                    file_content.len()
-                );
-
-                println!("{response_body}");
 
                 // save the file to `uploaded` directory
                 let mut new_file = std::fs::File::create(format!(
